@@ -7,15 +7,13 @@ const BLOCK_SIZE: usize = 32;
 /// Nombre total de blocs
 const NUM_BLOCKS: usize = 128;
 
-/// Structure sécurisée pour encapsuler le HEAP
+/// Zone mémoire
 struct Heap {
     memory: UnsafeCell<[u8; BLOCK_SIZE * NUM_BLOCKS]>,
 }
 
-// Implémentation de `Sync` pour `Heap`
 unsafe impl Sync for Heap {}
 
-/// Zone mémoire statique sécurisée
 static HEAP: Heap = Heap {
     memory: UnsafeCell::new([0; BLOCK_SIZE * NUM_BLOCKS]),
 };
@@ -25,23 +23,20 @@ struct FreeBlock {
     next: Option<&'static mut FreeBlock>,
 }
 
-/// Allocateur Slab sécurisé
+/// Allocateur Slab
 pub struct SlabAllocator {
     free_list: UnsafeCell<Option<&'static mut FreeBlock>>,
 }
 
-// Implémentation de `Sync` pour `SlabAllocator`
 unsafe impl Sync for SlabAllocator {}
 
 impl SlabAllocator {
-    /// Création d'un nouvel allocateur
     pub const fn new() -> Self {
         SlabAllocator {
             free_list: UnsafeCell::new(None),
         }
     }
 
-    /// Initialisation de la liste des blocs libres
     pub unsafe fn init(&self) {
         let mut prev: Option<&'static mut FreeBlock> = None;
 
@@ -57,7 +52,6 @@ impl SlabAllocator {
 }
 
 unsafe impl GlobalAlloc for SlabAllocator {
-    /// Allocation d'un bloc de mémoire
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         if layout.size() > BLOCK_SIZE {
             return null_mut();
@@ -73,7 +67,6 @@ unsafe impl GlobalAlloc for SlabAllocator {
         }
     }
 
-    /// Libération d'un bloc de mémoire
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
         let block = ptr as *mut FreeBlock;
 
