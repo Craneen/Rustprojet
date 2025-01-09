@@ -1,0 +1,1 @@
+/mnt/c/Users/33769/OneDrive/Bureau/rust/Rustprojet/slab_allocator/target/x86_64-unknown-linux-gnu/debug/libslab_allocator.rlib: /mnt/c/Users/33769/OneDrive/Bureau/rust/Rustprojet/slab_allocator/src/allocator.rs /mnt/c/Users/33769/OneDrive/Bureau/rust/Rustprojet/slab_allocator/src/lib.rs
