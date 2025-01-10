@@ -5,7 +5,7 @@ use core::cell::UnsafeCell;
 /// Taille d'un bloc mémoire
 const BLOCK_SIZE: usize = 32;
 /// Nombre total de blocs
-const NUM_BLOCKS: usize = 128;
+pub const NUM_BLOCKS: usize = 128;
 
 /// Zone mémoire
 struct Heap {
@@ -26,6 +26,7 @@ struct FreeBlock {
 /// Allocateur Slab
 pub struct SlabAllocator {
     free_list: UnsafeCell<Option<&'static mut FreeBlock>>,
+    free_count: UnsafeCell<usize>, // Nouveau compteur pour suivre les blocs libres
 }
 
 unsafe impl Sync for SlabAllocator {}
@@ -34,6 +35,7 @@ impl SlabAllocator {
     pub const fn new() -> Self {
         SlabAllocator {
             free_list: UnsafeCell::new(None),
+            free_count: UnsafeCell::new(0),
         }
     }
 
@@ -48,23 +50,31 @@ impl SlabAllocator {
         }
 
         *self.free_list.get() = prev;
+        *self.free_count.get() = NUM_BLOCKS; // Initialiser le compteur avec le nombre total de blocs
+    }
+    pub fn free_blocks(&self) -> usize {
+        unsafe { *self.free_count.get() }
     }
 }
 
+
 unsafe impl GlobalAlloc for SlabAllocator {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        if layout.size() > BLOCK_SIZE {
+        if layout.size() > BLOCK_SIZE || *self.free_count.get() == 0 {
             return null_mut();
         }
 
         let free_list = &mut *self.free_list.get();
 
+        // Tente de retirer un bloc de la liste libre
         if let Some(block) = free_list.take() {
             *free_list = block.next.take();
-            block as *mut FreeBlock as *mut u8
-        } else {
-            null_mut()
+            *self.free_count.get() -= 1; // Décrémente le compteur si allocation réussie
+            return block as *mut FreeBlock as *mut u8;
         }
+
+        // Retourne null_mut() si aucun bloc n'est disponible
+        null_mut()
     }
 
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
@@ -73,5 +83,6 @@ unsafe impl GlobalAlloc for SlabAllocator {
         let free_list = &mut *self.free_list.get();
         (*block).next = free_list.take();
         *free_list = Some(&mut *block);
+        *self.free_count.get() += 1; // Incrémente le compteur
     }
 }
