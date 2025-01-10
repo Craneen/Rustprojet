@@ -44,3 +44,15 @@ Des tests unitaires sont fournis pour vérifier les cas suivants :
     Vérification des compteurs de blocs libres.
 
 Tous ces tests sont documentés dans le fichier REPORT_TEST.md et sont conçus pour garantir la fiabilité de l’allocateur dans divers scénarios.
+
+
+Résultats des Tests
+
+Des tests unitaires sont fournis pour vérifier les cas suivants :
+
+    Allocation de blocs mémoire.
+    Libération et réutilisation de blocs.
+    Gestion de la saturation mémoire.
+    Vérification des compteurs de blocs libres.
+
+Tous ces tests sont documentés dans le fichier REPORT_TEST.md et sont conçus pour garantir la fiabilité de l’allocateur dans divers scénarios.
