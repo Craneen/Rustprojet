@@ -92,5 +92,12 @@ Résultat Final :
 
 Prochaine Étape : Jour 5
 
-    Explorer les outils de qualité de code (miri, mirai, etc.) pour détecter les erreurs potentielles.
-    Commencer à préparer le rapport final en documentant les choix techniques réalisés jusqu’à présent.
+    Tests de robustesse :
+        Ajouter un test pour détecter les corruptions mémoire potentielles causées par une double désallocation.
+        Vérifier l’utilisation de pointeurs après leur libération pour identifier les risques d’accès illégal à la mémoire.
+
+    Améliorations de la qualité du code :
+        Explorer l’utilisation d’outils tels que Miri ou Mirai pour détecter les erreurs de sécurité ou de comportement indéfini.
+
+    Préparation du rapport final :
+        Commencer à structurer REPORT.md pour inclure une documentation détaillée des choix techniques, des solutions implémentées, et des comparaisons avec d'autres allocateurs.
