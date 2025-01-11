@@ -24,14 +24,19 @@ struct FreeBlock {
 }
 
 /// Allocateur Slab
+///
+/// Cet allocateur utilise des blocs de taille fixe.
+/// Les fonctions `alloc` et `dealloc` permettent de gérer
+/// la mémoire tout en assurant un alignement correct.
 pub struct SlabAllocator {
     free_list: UnsafeCell<Option<&'static mut FreeBlock>>,
-    free_count: UnsafeCell<usize>, // Nouveau compteur pour suivre les blocs libres
+    free_count: UnsafeCell<usize>, // Compteur des blocs libres
 }
 
 unsafe impl Sync for SlabAllocator {}
 
 impl SlabAllocator {
+    /// Crée un nouvel allocateur
     pub const fn new() -> Self {
         SlabAllocator {
             free_list: UnsafeCell::new(None),
@@ -39,6 +44,13 @@ impl SlabAllocator {
         }
     }
 
+    /// Initialise l'allocateur en créant une liste chaînée de blocs libres
+    ///
+    /// # Safety
+    /// - Cette fonction doit être appelée une seule fois avant toute utilisation.
+    /// - L'accès direct à la mémoire brute via `UnsafeCell` peut provoquer des comportements
+    ///   indéfinis si mal utilisé. Il est crucial de s'assurer qu'aucun autre accès simultané
+    ///   n'a lieu lors de l'initialisation.
     pub unsafe fn init(&self) {
         let mut prev: Option<&'static mut FreeBlock> = None;
 
@@ -50,15 +62,24 @@ impl SlabAllocator {
         }
 
         *self.free_list.get() = prev;
-        *self.free_count.get() = NUM_BLOCKS; // Initialiser le compteur avec le nombre total de blocs
+        *self.free_count.get() = NUM_BLOCKS;
     }
-    pub fn free_blocks(&self) -> usize {
+
+    /// Retourne le nombre de blocs libres
+    pub fn free_count(&self) -> usize {
         unsafe { *self.free_count.get() }
     }
 }
 
-
 unsafe impl GlobalAlloc for SlabAllocator {
+    /// Alloue un bloc mémoire en fonction du layout
+    ///
+    /// # Arguments
+    /// - `layout` : Layout spécifiant la taille et l'alignement requis.
+    ///
+    /// # Safety
+    /// - L'utilisateur doit s'assurer que le layout est valide.
+    /// - Le pointeur retourné ne doit pas être utilisé après avoir été libéré.
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         if layout.size() > BLOCK_SIZE || *self.free_count.get() == 0 {
             return null_mut();
@@ -66,23 +87,27 @@ unsafe impl GlobalAlloc for SlabAllocator {
 
         let free_list = &mut *self.free_list.get();
 
-        // Tente de retirer un bloc de la liste libre
         if let Some(block) = free_list.take() {
             *free_list = block.next.take();
-            *self.free_count.get() -= 1; // Décrémente le compteur si allocation réussie
-            return block as *mut FreeBlock as *mut u8;
+            *self.free_count.get() -= 1;
+            block as *mut FreeBlock as *mut u8
+        } else {
+            null_mut()
         }
-
-        // Retourne null_mut() si aucun bloc n'est disponible
-        null_mut()
     }
 
+    /// Libère un bloc mémoire en le réinsérant dans la liste chaînée
+    ///
+    /// # Safety
+    /// - Le pointeur `ptr` doit avoir été alloué par cet allocateur.
+    /// - Le `layout` passé doit correspondre au layout utilisé pour l'allocation.
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
         let block = ptr as *mut FreeBlock;
 
         let free_list = &mut *self.free_list.get();
         (*block).next = free_list.take();
         *free_list = Some(&mut *block);
-        *self.free_count.get() += 1; // Incrémente le compteur
+        *self.free_count.get() += 1;
     }
+    
 }

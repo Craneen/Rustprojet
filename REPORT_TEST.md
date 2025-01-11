@@ -44,3 +44,22 @@ Tests réalisés
 
 Conclusion
 Les tests du Jour 3 confirment la robustesse des mécanismes internes de l'allocateur. Les structures de données restent fiables sous des conditions d’utilisation plus complexes, et les compteurs de blocs libres reflètent fidèlement l’état de la mémoire.
+
+Résultats des Tests - Jour 4
+
+Tests réalisés :
+
+    Validation des alignements incorrects :
+        Réussi → Vérification que l’allocateur refuse les alignements invalides (Layout::from_size_align renvoie une erreur).
+
+    Gestion des tailles d’allocation trop grandes :
+        Réussi → Validation que l’allocateur refuse les demandes d’allocation dépassant la taille d’un bloc.
+
+    Documentation des sections unsafe :
+        Réussi → Vérification que toutes les zones unsafe sont correctement justifiées et documentées pour éviter les comportements indéfinis.
+
+    Test de régression sur les fonctionnalités des Journées 1 à 3 :
+        Réussi → Les fonctionnalités précédemment implémentées restent stables et fonctionnelles.
+
+Conclusion :
+Le Jour 4 marque une étape importante dans la maturité de l’allocateur. Les cas limites tels que les alignements invalides et les tailles excessives sont correctement gérés. La documentation et la justification des sections critiques renforcent la sécurité du projet. Tous les tests confirment que l’allocateur est robuste, sûr et prêt pour des améliorations supplémentaires.

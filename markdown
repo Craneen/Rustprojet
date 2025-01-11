@@ -59,10 +59,38 @@ Résultat Final :
     L’allocateur est maintenant capable de suivre l’état précis de ses blocs libres.
     Tous les tests confirment le bon fonctionnement de l’allocateur avec la nouvelle gestion du compteur.
 
-Prochaine Étape : Jour 4
+Bilan de la Journée 4
 
-Objectifs :
+Modifications et Ajouts Réalisés :
 
-    Refactoriser le code pour améliorer sa clarté et sa maintenabilité.
-    Ajouter des commentaires et une documentation complète.
-    Étendre les tests pour couvrir des cas de fragmentation mémoire.
+    Refactorisation du code :
+        Simplification de certaines parties complexes pour une meilleure lisibilité.
+        Réorganisation des fonctions et des commentaires pour plus de clarté.
+
+    Documentation complète :
+        Ajout de commentaires pour chaque fonction (via rustdoc).
+        Documentation détaillée des sections unsafe pour justifier leur utilisation et garantir leur sécurité.
+
+    Tests supplémentaires :
+        Gestion des alignements incorrects.
+        Validation des tailles d’allocation trop grandes.
+        Tests avancés simulant des cas de fragmentation mémoire.
+
+    Fichiers Modifiés et Créés :
+        src/allocator.rs : Refactorisation et documentation complète des fonctions.
+        src/lib.rs : Extension des tests unitaires pour couvrir les nouveaux cas limites.
+        REPORT_TEST.md : Mise à jour des résultats des tests.
+
+Résultats des tests :
+
+    Tous les tests passent avec cargo test, y compris les cas limites ajoutés.
+
+Résultat Final :
+
+    Le code est désormais clair, bien documenté et facile à maintenir.
+    Les cas limites comme les alignements incorrects et les tailles excessives sont correctement gérés.
+
+Prochaine Étape : Jour 5
+
+    Explorer les outils de qualité de code (miri, mirai, etc.) pour détecter les erreurs potentielles.
+    Commencer à préparer le rapport final en documentant les choix techniques réalisés jusqu’à présent.

@@ -112,4 +112,42 @@ mod tests {
             assert!(ptr.is_null(), "Erreur : dépassement mémoire accepté");
         }
     }
+    #[test]
+    fn test_invalid_layout() {
+        static ALLOCATOR: SlabAllocator = SlabAllocator::new();
+
+        unsafe {
+            ALLOCATOR.init();
+
+            // Test avec un alignement invalide
+            let invalid_layout = Layout::from_size_align(16, 3);
+            assert!(invalid_layout.is_err(), "Erreur : alignement invalide accepté");
+
+            // Test avec une taille trop grande
+            let too_large_layout = Layout::from_size_align(128, 8).expect("Layout invalide");
+            let ptr = ALLOCATOR.alloc(too_large_layout);
+            assert!(ptr.is_null(), "Erreur : allocation incorrecte pour une taille trop grande");
+        }
+    }
+
+    #[test]
+    fn test_free_count() {
+        static ALLOCATOR: SlabAllocator = SlabAllocator::new();
+
+        unsafe {
+            ALLOCATOR.init();
+
+            let layout = Layout::from_size_align(16, 8).expect("Layout invalide");
+
+            // Allocation d'un bloc
+            let ptr1 = ALLOCATOR.alloc(layout);
+            assert!(!ptr1.is_null(), "Erreur : allocation échouée");
+            assert_eq!(ALLOCATOR.free_count(), NUM_BLOCKS - 1, "Erreur : compteur incorrect après allocation");
+
+            // Libération d'un bloc
+            ALLOCATOR.dealloc(ptr1, layout);
+            assert_eq!(ALLOCATOR.free_count(), NUM_BLOCKS, "Erreur : compteur incorrect après désallocation");
+        }
+    }
+
 }

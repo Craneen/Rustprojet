@@ -15,44 +15,42 @@ Fonctionnalités
     Désallocation des blocs pour leur réutilisation.
     Gestion des cas de saturation et refus d’allocation quand la mémoire est pleine.
     Suivi du nombre de blocs libres restants pour valider les performances et la cohérence.
+    Stabilité garantie même avec des scénarios complexes d’allocations et de désallocations.
 
 Prérequis
 
-Avant de compiler ou de tester le projet, assurez-vous d’avoir installé les sources de Rust nécessaires, notamment si vous travaillez avec une configuration no_std.
+Avant de compiler ou de tester le projet, assurez-vous d’avoir installé les sources de Rust nécessaires.
 
+    rustup component add rust-src --toolchain nightly
 
 Compilation
 
 Pour compiler le projet, exécutez la commande suivante :
 
-```bash
-cargo build
+    cargo build
 
 Exécution des Tests
 
 Pour lancer les tests unitaires et vérifier le bon fonctionnement de l’allocateur, utilisez la commande suivante :
 
-cargo test
+    cargo test
+
+Nettoyage du Projet
+
+Pour nettoyer les fichiers générés par la compilation :
+
+    cargo clean
 
 Résultats des Tests
 
 Des tests unitaires sont fournis pour vérifier les cas suivants :
 
-    Allocation de blocs mémoire.
-    Libération et réutilisation de blocs.
-    Gestion de la saturation mémoire.
-    Vérification des compteurs de blocs libres.
-
-Tous ces tests sont documentés dans le fichier REPORT_TEST.md et sont conçus pour garantir la fiabilité de l’allocateur dans divers scénarios.
-
-
-Résultats des Tests
-
-Des tests unitaires sont fournis pour vérifier les cas suivants :
-
-    Allocation de blocs mémoire.
-    Libération et réutilisation de blocs.
-    Gestion de la saturation mémoire.
-    Vérification des compteurs de blocs libres.
+    1 Allocation de blocs mémoire.
+    2 Libération et réutilisation de blocs.
+    3 Gestion de la saturation mémoire.
+    4 Vérification des compteurs de blocs libres.
+    5 Allocation jusqu'à saturation.
+    6 Refus d'allocation en cas de saturation.
+    7 Suivi dynamique des blocs libres.
 
 Tous ces tests sont documentés dans le fichier REPORT_TEST.md et sont conçus pour garantir la fiabilité de l’allocateur dans divers scénarios.
