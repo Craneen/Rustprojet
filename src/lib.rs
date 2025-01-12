@@ -17,6 +17,8 @@ mod tests {
     use super::allocator::{SlabAllocator, NUM_BLOCKS};
     use core::alloc::{GlobalAlloc, Layout};
 
+    static ALLOCATOR: SlabAllocator = SlabAllocator::new(); // Déclaration globale ici
+
     // Test d'une allocation simple
     #[test]
     fn test_allocation_simple() {
@@ -36,17 +38,19 @@ mod tests {
     // Test de désallocation d'un bloc
     #[test]
     fn test_deallocation() {
-        static ALLOCATOR: SlabAllocator = SlabAllocator::new();
-
         unsafe {
             ALLOCATOR.init();
-
+    
             let layout = Layout::from_size_align(16, 8).expect("Layout invalide");
-
-            // Allocation et désallocation
+    
+            // Allocation
             let ptr = ALLOCATOR.alloc(layout);
             assert!(!ptr.is_null(), "Erreur : allocation échouée");
-
+    
+            // Validation explicite avant désallocation
+            assert_eq!(*(ptr as *mut u8), 0, "Erreur : mémoire non initialisée ou corrompue");
+    
+            // Désallocation
             ALLOCATOR.dealloc(ptr, layout);
         }
     }
@@ -112,6 +116,7 @@ mod tests {
             assert!(ptr.is_null(), "Erreur : dépassement mémoire accepté");
         }
     }
+
     #[test]
     fn test_invalid_layout() {
         static ALLOCATOR: SlabAllocator = SlabAllocator::new();
@@ -147,6 +152,48 @@ mod tests {
             // Libération d'un bloc
             ALLOCATOR.dealloc(ptr1, layout);
             assert_eq!(ALLOCATOR.free_count(), NUM_BLOCKS, "Erreur : compteur incorrect après désallocation");
+        }
+    }
+
+    // Test : Double désallocation
+    #[test]
+    #[should_panic(expected = "Erreur : tentative de double désallocation détectée !")]
+    fn test_double_deallocation() {
+        unsafe {
+            ALLOCATOR.init();
+            let layout = Layout::from_size_align(16, 8).expect("Layout invalide");
+    
+            let ptr = ALLOCATOR.alloc(layout);
+            assert!(!ptr.is_null(), "Erreur : allocation échouée");
+    
+            // Libération du bloc
+            ALLOCATOR.dealloc(ptr, layout);
+    
+            // Deuxième libération du même bloc (devrait provoquer un panic)
+            ALLOCATOR.dealloc(ptr, layout);
+        }
+    }
+
+    // Test : Utilisation de pointeurs après libération
+    #[test]
+    fn test_use_after_free() {
+        unsafe {
+            ALLOCATOR.init();
+            let layout = Layout::from_size_align(16, 8).expect("Layout invalide");
+    
+            let ptr = ALLOCATOR.alloc(layout);
+            assert!(!ptr.is_null(), "Erreur : allocation échouée");
+    
+            // Libération du bloc
+            ALLOCATOR.dealloc(ptr, layout);
+    
+            // Tenter un accès au pointeur après libération
+            // Cela ne devrait pas être autorisé et entraîner un comportement invalide
+            let dereferenced_value = *(ptr as *mut u8);
+            assert_ne!(
+                dereferenced_value, 0,
+                "Erreur : utilisation après libération détectée"
+            );
         }
     }
 

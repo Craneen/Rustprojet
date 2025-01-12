@@ -7,10 +7,12 @@ const BLOCK_SIZE: usize = 32;
 /// Nombre total de blocs
 pub const NUM_BLOCKS: usize = 128;
 
-/// Zone mémoire
+/// Zone mémoire avec alignement explicite
+#[repr(align(8))]
 struct Heap {
     memory: UnsafeCell<[u8; BLOCK_SIZE * NUM_BLOCKS]>,
 }
+
 
 unsafe impl Sync for Heap {}
 
@@ -52,18 +54,34 @@ impl SlabAllocator {
     ///   indéfinis si mal utilisé. Il est crucial de s'assurer qu'aucun autre accès simultané
     ///   n'a lieu lors de l'initialisation.
     pub unsafe fn init(&self) {
-        let mut prev: Option<&'static mut FreeBlock> = None;
-
+        let memory_ptr = (*HEAP.memory.get()).as_mut_ptr();
+    
+        // Pointeur initial pour le précédent bloc
+        let mut prev: *mut FreeBlock = core::ptr::null_mut();
+    
         for i in 0..NUM_BLOCKS {
-            let block_ptr = (*HEAP.memory.get()).as_mut_ptr().add(i * BLOCK_SIZE) as *mut FreeBlock;
-            let block = &mut *block_ptr;
-            block.next = prev;
-            prev = Some(block);
+            // Calcul d'un pointeur correctement aligné
+            let block_ptr = memory_ptr.add(i * BLOCK_SIZE).cast::<FreeBlock>();
+    
+            // Initialisation du bloc
+            let block = block_ptr.as_mut().expect("Pointeur nul détecté lors de l'initialisation");
+    
+            // Chaînage des blocs libres
+            block.next = if prev.is_null() { None } else { Some(&mut *prev) };
+    
+            // Mettre à jour le pointeur précédent
+            prev = block_ptr;
         }
-
-        *self.free_list.get() = prev;
+    
+        // Mettre à jour la liste chaînée et le compteur
+        *self.free_list.get() = if prev.is_null() { None } else { Some(&mut *prev) };
         *self.free_count.get() = NUM_BLOCKS;
     }
+    
+        
+    
+    
+    
 
     /// Retourne le nombre de blocs libres
     pub fn free_count(&self) -> usize {
@@ -78,7 +96,6 @@ unsafe impl GlobalAlloc for SlabAllocator {
     /// - `layout` : Layout spécifiant la taille et l'alignement requis.
     ///
     /// # Safety
-    /// - L'utilisateur doit s'assurer que le layout est valide.
     /// - Le pointeur retourné ne doit pas être utilisé après avoir été libéré.
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         if layout.size() > BLOCK_SIZE || *self.free_count.get() == 0 {
@@ -103,11 +120,23 @@ unsafe impl GlobalAlloc for SlabAllocator {
     /// - Le `layout` passé doit correspondre au layout utilisé pour l'allocation.
     unsafe fn dealloc(&self, ptr: *mut u8, _layout: Layout) {
         let block = ptr as *mut FreeBlock;
-
+    
+        // Vérifier si le bloc a déjà été désalloué
+        if (*block).next.is_some() {
+            panic!("Erreur : tentative de double désallocation détectée !");
+        }
+    
+        // Accéder à la liste des blocs libres
         let free_list = &mut *self.free_list.get();
+    
+        // Ajouter le bloc à la liste des blocs libres
         (*block).next = free_list.take();
         *free_list = Some(&mut *block);
+    
+        // Mettre à jour le compteur des blocs libres
         *self.free_count.get() += 1;
     }
     
+    
+        
 }

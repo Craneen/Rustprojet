@@ -90,14 +90,51 @@ Résultat Final :
     Le code est désormais clair, bien documenté et facile à maintenir.
     Les cas limites comme les alignements incorrects et les tailles excessives sont correctement gérés.
 
-Prochaine Étape : Jour 5
+Bilan de la Journée 5
+Modifications et Ajouts Réalisés :
 
-    Tests de robustesse :
-        Ajouter un test pour détecter les corruptions mémoire potentielles causées par une double désallocation.
-        Vérifier l’utilisation de pointeurs après leur libération pour identifier les risques d’accès illégal à la mémoire.
+    Tests de Robustesse :
+        Ajout d’un test pour la détection des corruptions mémoire causées par une double désallocation.
+            Le test panique intentionnellement avec un message clair si une double désallocation est détectée.
+        Ajout d’un test pour l’utilisation de pointeurs après leur libération.
+            Vérification que les accès illégaux après libération sont correctement détectés et empêchés.
 
-    Améliorations de la qualité du code :
-        Explorer l’utilisation d’outils tels que Miri ou Mirai pour détecter les erreurs de sécurité ou de comportement indéfini.
+    Amélioration de la Robustesse :
+        Renforcement des validations dans les fonctions alloc et dealloc pour garantir une gestion stricte des erreurs.
+        Utilisation de valeurs spécifiques pour identifier les blocs désalloués et éviter les comportements indéfinis.
 
-    Préparation du rapport final :
-        Commencer à structurer REPORT.md pour inclure une documentation détaillée des choix techniques, des solutions implémentées, et des comparaisons avec d'autres allocateurs.
+    Utilisation d’Outils de Vérification :
+        Tests effectués avec l’outil Miri pour détecter les comportements indéfinis et valider la conformité du code.
+        Analyse approfondie des backtraces pour résoudre les erreurs liées à la sécurité mémoire.
+
+Fichiers Modifiés et Créés :
+
+    src/allocator.rs : Ajout de vérifications pour empêcher les corruptions mémoire et les accès illégaux.
+    src/lib.rs : Intégration de tests unitaires pour la double désallocation et l’utilisation après libération.
+    REPORT_TEST.md : Mise à jour des résultats des tests avec les nouveaux cas de robustesse.
+
+Résultats des Tests :
+
+    Tous les tests passent avec succès, y compris ceux exécutés avec Miri.
+    Validation complète de la gestion des erreurs et des comportements indéfinis.
+
+Résultat Final :
+
+    L’allocateur est désormais résistant aux tentatives de double désallocation et d’utilisation de pointeurs après libération.
+    Tous les tests confirment une gestion sûre et robuste de la mémoire.
+
+Prochaine Étape : Jour 6
+
+    Optimisation de la Gestion des Blocs Libres :
+        Implémenter un algorithme de premier ajustement pour améliorer l’efficacité de la recherche de blocs libres.
+        Explorer les avantages d’un algorithme de meilleur ajustement pour des cas spécifiques de fragmentation mémoire.
+
+    Analyse des Performances :
+        Mesurer les temps d’exécution pour les opérations d’allocation et de désallocation avec les algorithmes actuels et optimisés.
+        Effectuer des tests dans des environnements simulés pour évaluer l’impact des optimisations sur les performances globales.
+
+    Amélioration et Documentation :
+        Mettre à jour REPORT_TEST.md avec les résultats des tests comparatifs de performance.
+        Débuter la documentation dans REPORT.md pour expliquer les choix des algorithmes, leurs avantages et leurs limitations.
+        Préparer un tableau comparatif des performances pour inclure dans le rapport final.
+

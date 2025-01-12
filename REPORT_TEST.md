@@ -63,3 +63,19 @@ Tests réalisés :
 
 Conclusion :
 Le Jour 4 marque une étape importante dans la maturité de l’allocateur. Les cas limites tels que les alignements invalides et les tailles excessives sont correctement gérés. La documentation et la justification des sections critiques renforcent la sécurité du projet. Tous les tests confirment que l’allocateur est robuste, sûr et prêt pour des améliorations supplémentaires.
+
+Résultats des Tests - Jour 5
+
+Tests réalisés :
+
+    Double désallocation :
+        Réussi → Vérification que l’allocateur gère correctement les tentatives de double libération, évitant ainsi les corruptions mémoire.
+
+    Utilisation de pointeurs après libération :
+        Réussi → Confirmation que l’accès à un pointeur libéré est sécurisé et que les cas d’accès illégal sont détectés et gérés.
+
+    Tests avec Miri :
+        Réussi → Analyse approfondie des erreurs de mémoire (ex. : accès concurrent non sécurisé, comportements indéfinis) via l’outil Miri. Aucun problème détecté.
+
+Conclusion :
+Les tests du Jour 5 renforcent la robustesse de l’allocateur face aux erreurs de gestion mémoire courantes. L’intégration de l’outil Miri garantit une sécurité accrue et valide le bon comportement des sections critiques du code.
