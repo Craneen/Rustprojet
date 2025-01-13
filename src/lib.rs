@@ -16,6 +16,7 @@ fn panic(_info: &PanicInfo) -> ! {
 mod tests {
     use super::allocator::{SlabAllocator, NUM_BLOCKS};
     use core::alloc::{GlobalAlloc, Layout};
+    use std::time::Instant;
 
     static ALLOCATOR: SlabAllocator = SlabAllocator::new(); // Déclaration globale ici
 
@@ -194,6 +195,67 @@ mod tests {
                 dereferenced_value, 0,
                 "Erreur : utilisation après libération détectée"
             );
+        }
+    }
+
+    #[test]
+    fn test_allocation_performance() {
+        unsafe {
+            ALLOCATOR.init();
+            let layout = Layout::from_size_align(16, 8).expect("Layout invalide");
+            let start = Instant::now();
+
+            for _ in 0..NUM_BLOCKS {
+                let ptr = ALLOCATOR.alloc(layout);
+                assert!(!ptr.is_null(), "Erreur : allocation échouée");
+            }
+
+            let duration = start.elapsed();
+            println!("Temps pour allouer {} blocs : {:?}", NUM_BLOCKS, duration);
+        }
+    }
+
+    #[test]
+    fn test_allocation_and_deallocation_performance() {
+        unsafe {
+            ALLOCATOR.init();
+            let layout = Layout::from_size_align(16, 8).expect("Layout invalide");
+            let start = Instant::now();
+
+            for i in 0..NUM_BLOCKS {
+                let ptr = ALLOCATOR.alloc(layout);
+                assert!(!ptr.is_null(), "Erreur : allocation échouée");
+                if i % 2 == 0 {
+                    ALLOCATOR.dealloc(ptr, layout);
+                }
+            }
+
+            let duration = start.elapsed();
+            println!(
+                "Temps pour allouer et désallouer partiellement {} blocs : {:?}",
+                NUM_BLOCKS, duration
+            );
+        }
+    }
+    #[test]
+    fn test_first_fit_allocation() {
+        unsafe {
+            ALLOCATOR.init();
+            let layout = Layout::from_size_align(16, 8).expect("Layout invalide");
+    
+            // Allocation de plusieurs blocs
+            for _ in 0..NUM_BLOCKS / 2 {
+                let ptr = ALLOCATOR.alloc(layout);
+                assert!(!ptr.is_null(), "Erreur : allocation échouée");
+            }
+    
+            // Désallouer un bloc au milieu
+            let ptr = ALLOCATOR.alloc(layout);
+            ALLOCATOR.dealloc(ptr, layout);
+    
+            // Nouvelle allocation devrait réutiliser le bloc désalloué
+            let ptr_reuse = ALLOCATOR.alloc(layout);
+            assert_eq!(ptr, ptr_reuse, "Erreur : premier ajustement incorrect");
         }
     }
 

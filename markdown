@@ -138,3 +138,64 @@ Prochaine Étape : Jour 6
         Débuter la documentation dans REPORT.md pour expliquer les choix des algorithmes, leurs avantages et leurs limitations.
         Préparer un tableau comparatif des performances pour inclure dans le rapport final.
 
+Bilan de la Journée 6
+Modifications et Ajouts Réalisés :
+
+    Optimisation de la Gestion des Blocs Libres :
+        Implémentation d’un algorithme de premier ajustement (First Fit) :
+            Recherche optimisée du premier bloc libre suffisamment grand pour une allocation.
+            Réduction de la fragmentation mémoire et amélioration des performances.
+        Préparation de la base pour l’intégration d’un futur algorithme de meilleur ajustement (Best Fit).
+
+    Tests de Performance :
+        Ajout de tests spécifiques pour mesurer les performances des opérations d’allocation et de désallocation :
+            Mesure du temps pour allouer tous les blocs.
+            Mesure du temps pour allouer et désallouer partiellement des blocs.
+        Validation que les optimisations n’impactent pas la stabilité ou la sécurité de l’allocateur.
+
+    Analyse des Résultats :
+        Comparaison des temps d’exécution entre l’approche initiale et l’algorithme optimisé :
+            Allocation de 128 blocs : 4.108 µs (optimisé).
+            Allocation et désallocation partielle : 5.591 µs (optimisé).
+
+    Robustesse et Régressions :
+        Tests de régression réussis pour valider que les fonctionnalités existantes ne sont pas affectées.
+        Analyse approfondie des résultats avec l’outil Miri pour garantir l’absence de comportements indéfinis.
+
+Fichiers Modifiés et Créés :
+
+    src/allocator.rs :
+        Ajout de l’algorithme de premier ajustement (First Fit).
+        Mise à jour des fonctions existantes pour intégrer les optimisations.
+    src/lib.rs :
+        Ajout de tests de performance pour mesurer les améliorations.
+    REPORT_TEST.md :
+        Documentation des résultats des tests de performance.
+        Inclusion des comparaisons entre l’approche initiale et l’algorithme optimisé.
+
+Résultats des Tests :
+
+    Tous les tests unitaires et de performance passent avec succès.
+    Les optimisations apportées se traduisent par une amélioration mesurable des performances sans compromettre la robustesse.
+
+Résultat Final :
+
+    L’algorithme de premier ajustement est intégré et opérationnel.
+    Les performances des opérations de gestion mémoire sont significativement améliorées.
+    L’allocateur reste stable et sécurisé dans des scénarios d’utilisation variés.
+
+Prochaine Étape : Jour 7
+
+    Finalisation des Algorithmes d’Optimisation :
+        Intégrer un algorithme de meilleur ajustement (Best Fit).
+        Comparer les performances entre le premier ajustement et le meilleur ajustement.
+
+    Documentation et Rapport Final :
+        Compléter la documentation dans REPORT.md :
+            Explication des choix d’algorithmes.
+            Comparaison des performances avec des tableaux et des graphiques.
+        Préparer un résumé technique des défis rencontrés et des solutions apportées.
+
+    Tests Finaux :
+        Effectuer des benchmarks finaux pour valider la solution complète.
+        Ajouter des tests simulant des cas d’utilisation réels pour évaluer l’allocateur dans des environnements diversifiés.

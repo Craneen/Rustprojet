@@ -17,6 +17,9 @@ Fonctionnalités
     Suivi du nombre de blocs libres restants pour valider les performances et la cohérence.
     Stabilité garantie, même avec des scénarios complexes d’allocations et de désallocations.
     Détection des erreurs de double désallocation et gestion des utilisations après libération.
+    Optimisation des performances grâce à l'implémentation d'un algorithme de premier ajustement (First Fit) pour l’allocation des blocs libres.
+    Mesures de performance pour évaluer l’efficacité de l’allocation et de la désallocation.
+
 
 Prérequis
 
@@ -24,12 +27,14 @@ Avant de compiler ou de tester le projet, assurez-vous d’avoir installé les s
 
 rustup component add rust-src --toolchain nightly
 rustup component add miri
+rustup override set nightly
 
 Compilation
 
 Pour compiler le projet, exécutez la commande suivante :
 
 cargo build
+
 
 Exécution des Tests
 
@@ -38,7 +43,7 @@ Pour lancer les tests unitaires et vérifier le bon fonctionnement de l’alloca
 cargo test
 
 Pour des analyses plus poussées et la détection d’erreurs de comportement indéfini, utilisez Miri :
-cargo miri test
+MIRIFLAGS="-Zmiri-backtrace=full" cargo miri test
 
 Nettoyage du Projet
 
@@ -59,5 +64,7 @@ Des tests unitaires sont fournis pour vérifier les cas suivants :
     Suivi dynamique des blocs libres.
     Double désallocation.
     Utilisation après libération.
+    Performance mesurée pour l’allocation de 128 blocs : environ 4 µs.
+    Performance mesurée pour l’allocation et désallocation partielle de 128 blocs : environ 5 µs.
 
 Tous ces tests sont documentés dans le fichier REPORT_TEST.md et sont conçus pour garantir la fiabilité de l’allocateur dans divers scénarios.

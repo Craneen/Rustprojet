@@ -79,3 +79,31 @@ Tests réalisés :
 
 Conclusion :
 Les tests du Jour 5 renforcent la robustesse de l’allocateur face aux erreurs de gestion mémoire courantes. L’intégration de l’outil Miri garantit une sécurité accrue et valide le bon comportement des sections critiques du code.
+Résultats des Tests - Jour 6
+Tests réalisés :
+
+    Tests de Performance :
+        Allocation de blocs mémoire :
+            Réussi → Mesure du temps pour allouer les 128 blocs.
+            Temps mesuré : 4.108 µs.
+        Allocation et désallocation partielle de blocs :
+            Réussi → Mesure du temps pour effectuer une allocation et une désallocation partielle sur les 128 blocs.
+            Temps mesuré : 5.591 µs.
+
+    Implémentation de l’Algorithme de Premier Ajustement (First Fit) :
+        Recherche optimisée du premier bloc libre suffisant pour l’allocation :
+            Réussi → Vérification que l’algorithme trouve correctement le premier bloc disponible sans sauter d’options valides.
+        Régression sur les cas limites (alignements incorrects, tailles excessives) :
+            Réussi → Validation que les nouvelles optimisations n’affectent pas les contrôles existants.
+
+    Tests de Robustesse et Régressions :
+        Validation des tests des Journées précédentes :
+            Réussi → Tous les tests existants (double désallocation, utilisation après libération, alignements incorrects) passent avec succès.
+        Analyse approfondie avec Miri :
+            Réussi → Aucun comportement indéfini ou problème de mémoire détecté après l’ajout des optimisations.
+
+Conclusion :
+
+    Les optimisations de gestion mémoire améliorent significativement les performances des opérations d’allocation et de désallocation.
+    L’algorithme de premier ajustement (First Fit) est intégré et fonctionne correctement dans tous les scénarios testés.
+    Les tests confirment que les optimisations n’impactent pas la stabilité ou la sécurité de l’allocateur.

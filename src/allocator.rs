@@ -101,17 +101,33 @@ unsafe impl GlobalAlloc for SlabAllocator {
         if layout.size() > BLOCK_SIZE || *self.free_count.get() == 0 {
             return null_mut();
         }
-
+    
         let free_list = &mut *self.free_list.get();
-
-        if let Some(block) = free_list.take() {
-            *free_list = block.next.take();
-            *self.free_count.get() -= 1;
-            block as *mut FreeBlock as *mut u8
-        } else {
-            null_mut()
+        let mut current = free_list.take();
+        let mut previous: Option<*mut FreeBlock> = None;
+    
+        while let Some(block) = current {
+            // Vérifier si ce bloc convient
+            if BLOCK_SIZE >= layout.size() {
+                // Met à jour le lien dans la liste chaînée
+                if let Some(prev) = previous {
+                    (*prev).next = block.next.take();
+                } else {
+                    *free_list = block.next.take();
+                }
+    
+                *self.free_count.get() -= 1;
+                return block as *mut FreeBlock as *mut u8;
+            }
+    
+            // Passer au bloc suivant
+            previous = Some(block as *mut FreeBlock);
+            current = block.next.take();
         }
+    
+        null_mut() // Aucun bloc trouvé
     }
+    
 
     /// Libère un bloc mémoire en le réinsérant dans la liste chaînée
     ///
