@@ -6,7 +6,9 @@ edition = "2021"
 [dependencies]
 
 [profile.dev]
+# Pour optimiser les performances, on désactive la gestion complète des panics
 panic = "abort"
 
 [profile.release]
+# Pour réduire l'empreinte mémoire en production, on utilise également "abort" pour les panics
 panic = "abort"

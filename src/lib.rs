@@ -1,3 +1,10 @@
+// Ce module contient des tests unitaires et de performance pour l'allocateur slab.
+// Tests inclus :
+// - Allocation et désallocation simples
+// - Réutilisation des blocs désalloués
+// - Gestion des erreurs (double désallocation, utilisation après libération)
+// - Optimisations (premier ajustement et mesure des performances)
+
 #![cfg_attr(not(test), no_std)]
 #![feature(allocator_api, alloc_error_handler)]
 

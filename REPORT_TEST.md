@@ -107,3 +107,23 @@ Conclusion :
     Les optimisations de gestion mémoire améliorent significativement les performances des opérations d’allocation et de désallocation.
     L’algorithme de premier ajustement (First Fit) est intégré et fonctionne correctement dans tous les scénarios testés.
     Les tests confirment que les optimisations n’impactent pas la stabilité ou la sécurité de l’allocateur.
+
+Résultats des Tests - Jour 7
+
+Tests réalisés :
+
+    Nettoyage et refactorisation du code :
+        Vérification de l’élimination des répétitions inutiles.
+        Validation que les modifications n’introduisent pas de régressions dans les fonctionnalités existantes :
+            Tous les tests unitaires passent avec succès.
+            Tests approfondis avec Miri : Aucun problème détecté.
+    Documentation et gestion des erreurs :
+
+    Tests des messages d’erreur pour des cas spécifiques :
+        Erreur pour double désallocation.
+        Erreur pour alignements incorrects ou tailles excessives.
+
+Conclusion :
+
+    Le code est maintenant clair, optimisé et maintenable.
+    

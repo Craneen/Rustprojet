@@ -199,3 +199,22 @@ Prochaine Étape : Jour 7
     Tests Finaux :
         Effectuer des benchmarks finaux pour valider la solution complète.
         Ajouter des tests simulant des cas d’utilisation réels pour évaluer l’allocateur dans des environnements diversifiés.
+
+Bilan de la Journée 7
+
+Modifications et Ajouts Réalisés :
+
+    Nettoyage et Refactorisation :
+        Simplification du code en éliminant les répétitions inutiles.
+        Réorganisation pour rendre le code plus lisible et maintenable.
+        Vérification que les modifications n’introduisent pas de régressions :
+            Tous les tests existants passent avec succès.
+            Analyse approfondie des résultats avec l’outil Miri.
+
+    Documentation Complète :
+        Explication des choix de conception :
+            Pourquoi utiliser un algorithme de premier ajustement (First Fit) et ses avantages.
+        Documentation détaillée des erreurs possibles :
+            Messages clairs pour les doubles désallocations ou alignements incorrects.
+
+   
