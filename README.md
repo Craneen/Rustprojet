@@ -36,35 +36,40 @@ Prérequis
 
 Avant de compiler ou de tester le projet, assurez-vous d’avoir installé les sources de Rust nécessaires :
 
-    ```bash
+    
+bash
     rustup component add rust-src --toolchain nightly
     rustup component add miri
-    rustup default nightly 
-                            ```
+    rustup default nightly
+
 
 Compilation
 
 Pour compiler le projet, exécutez la commande suivante :
-    ```bash
+    
+bash
     cargo build
-                ```
+
 
 Exécution des Tests:
 Pour lancer les tests unitaires et vérifier le bon fonctionnement de l’allocateur, utilisez la commande suivante :
-    ```bash
-    cargo test ```
+    
+bash
+    cargo test
+
 
 Pour des analyses plus poussées et la détection d’erreurs de comportement indéfini, utilisez Miri 
 Pour activer les tests Miri avec une capture détaillée des erreurs :
-    ```bash
+    
+bash
     MIRIFLAGS="-Zmiri-backtrace=full" cargo miri test -- --nocapture
-                                                                    ```
+
 
 Nettoyage du Projet
 
 Pour nettoyer les fichiers générés par la compilation :
-
-    `cargo clean
+    
+    cargo clean
 
 Résultats des Tests
 

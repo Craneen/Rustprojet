@@ -126,4 +126,3 @@ Tests réalisés :
 Conclusion :
 
     Le code est maintenant clair, optimisé et maintenable.
-    

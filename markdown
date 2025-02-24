@@ -21,9 +21,9 @@ Modifications et Ajouts Réalisés :
         tests/allocator_test.rs : Ajout de tests unitaires pour valider les fonctionnalités.
         REPORT_TEST.md : Résultats détaillés des tests.
 
-    Tests Unitaires Ajoutés :
-        Allocation d’un bloc mémoire.
-        Libération et réutilisation d’un bloc.
+    Ajout de tests pour valider les fonctionnalités :
+        Allocation d’un bloc.
+        Libération et réutilisation.
         Allocation jusqu’à saturation.
         Gestion de l’erreur en cas de saturation.
 
@@ -216,5 +216,3 @@ Modifications et Ajouts Réalisés :
             Pourquoi utiliser un algorithme de premier ajustement (First Fit) et ses avantages.
         Documentation détaillée des erreurs possibles :
             Messages clairs pour les doubles désallocations ou alignements incorrects.
-
-   
