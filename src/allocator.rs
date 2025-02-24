@@ -58,7 +58,7 @@ impl SlabAllocator {
     /// Crée une nouvelle instance de l'allocateur avec une liste de blocs libres non initialisée.
     ///
     /// Cette méthode ne fait que définir la structure ; l'initialisation des blocs doit
-    /// être effectuée explicitement avec `init`.
+    /// être effectuée explicitement avec init.
 
     pub const fn new() -> Self {
         SlabAllocator {
@@ -71,7 +71,7 @@ impl SlabAllocator {
     ///
     /// # Safety
     /// - Cette fonction doit être appelée une seule fois avant toute opération d'allocation ou de désallocation.
-    /// - Les accès directs à la mémoire brute via `UnsafeCell` doivent être effectués
+    /// - Les accès directs à la mémoire brute via UnsafeCell doivent être effectués
     ///   avec précaution pour éviter les comportements indéfinis.
 
     pub unsafe fn init(&self) {
@@ -114,7 +114,7 @@ unsafe impl GlobalAlloc for SlabAllocator {
     /// Alloue un bloc mémoire en fonction du layout spécifié.
     ///
     /// # Arguments
-    /// - `layout` : Décrit la taille et l'alignement requis pour l'allocation.
+    /// - layout : Décrit la taille et l'alignement requis pour l'allocation.
     ///
     /// # Safety
     /// - Le pointeur retourné ne doit pas être utilisé après avoir été libéré.
@@ -158,8 +158,8 @@ unsafe impl GlobalAlloc for SlabAllocator {
     /// Libère un bloc mémoire précédemment alloué et le réinsère dans la liste des blocs libres.
     ///
     /// # Arguments
-    /// - `ptr` : Pointeur vers le bloc à libérer.
-    /// - `layout` : Layout utilisé lors de l'allocation.
+    /// - ptr : Pointeur vers le bloc à libérer.
+    /// - layout : Layout utilisé lors de l'allocation.
     ///
     /// # Safety
     /// - Le pointeur doit avoir été retourné par une allocation réussie.
